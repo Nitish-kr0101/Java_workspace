@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: demoApp
+
+server:
+  port: 888

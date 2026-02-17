@@ -1,0 +1,70 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cricketers</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;background:#f6f8fb;color:#222}
+    header{background:#2b6fb6;color:#fff;padding:1rem}
+    main{max-width:1000px;margin:1rem auto;padding:0 1rem}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:6px;overflow:hidden}
+    th,td{padding:.75rem;text-align:left;border-bottom:1px solid #eee}
+    th{background:#f1f5f9}
+    tr:hover{background:#f9fafb}
+    .muted{color:#666}
+    .actions button{margin-right:.5rem}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Teams & Players</h1>
+  </header>
+  <main>
+    <section>
+      <p class="muted">This page is rendered by Thymeleaf using the `teams` model attribute.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Team ID</th>
+            <th>Team Name</th>
+            <th>Number of Players</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="team : ${teams}">
+            <td th:text="${team.teamId}">1</td>
+            <td th:text="${team.teamName}">Kings XI</td>
+            <td th:text="${team.noOfPlayers}">11</td>
+            <td class="actions">
+              <button th:attr="data-id=${team.teamId}" onclick="showDetails(this)">Details</button>
+            </td>
+          </tr>
+          <tr th:if="${teams == null || #lists.isEmpty(teams)}">
+            <td colspan="4" class="muted">No teams available.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section style="margin-top:1rem;">
+      <h3>Team Details</h3>
+      <pre id="details" style="background:#fff;padding:1rem;border-radius:6px;min-height:80px;">Select a team to view details.</pre>
+    </section>
+  </main>
+
+  <script th:inline="javascript">
+    function showDetails(btn) {
+      var id = btn.getAttribute('data-id');
+      // Find row values from the DOM (simple client-side lookup)
+      var row = btn.closest('tr');
+      var name = row.children[1].innerText;
+      var players = row.children[2].innerText;
+      var output = 'Team ID: ' + id + '\n' + 'Team Name: ' + name + '\n' + 'Players: ' + players;
+      document.getElementById('details').textContent = output;
+    }
+  </script>
+</body>
+</html>
+

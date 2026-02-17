@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Cricket</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background:#f7f9fc; color:#222 }
+    header { background: #0b5ed7; color: white; padding: 1rem 1.5rem }
+    header h1 { margin: 0; font-size: 1.5rem }
+    nav { margin-top: .5rem }
+    nav a { color: white; margin-right: 1rem; text-decoration: none }
+    main { padding: 1.5rem; max-width: 900px; margin: 0 auto }
+    section { background: white; padding: 1rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 1rem }
+    .grid { display: grid; grid-template-columns: 1fr 300px; gap: 1rem }
+    .card { padding: .75rem }
+    .muted { color: #666 }
+    footer { text-align:center; padding: 1rem; color: #666 }
+    button { background:#0b5ed7; color:white; border:0; padding:.5rem .75rem; border-radius:4px; cursor:pointer }
+    input[type="number"] { width: 80px }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cricket — Basics, Rules & Interactive Tools</h1>
+    <nav>
+      <a href="/index.html">Home</a>
+      <a href="/aboutus.html">About Us</a>
+      <a href="/cricket">Cricket</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>What is Cricket?</h2>
+      <p>Cricket is a bat-and-ball sport played between two teams of eleven players. It is popular in many countries and has several formats ranging from Test matches (5 days) to One Day Internationals (50 overs per side) and T20 (20 overs per side).</p>
+      <p class="muted">This page lives under the application's <code>/static</code> resources and is served through the application controller at <code>/cricket</code>.</p>
+    </section>
+
+    <div class="grid">
+      <section>
+        <h3>Key Rules (Short)</h3>
+        <ul>
+          <li>Two teams of 11 players.</li>
+          <li>One team bats, trying to score runs; the other bowls and fields to dismiss the batsmen and limit runs.</li>
+          <li>An innings ends when 10 batsmen are out, or overs are completed, or the batting team declares (in some formats).</li>
+          <li>Runs are scored by running between the wickets or by hitting boundaries (4 or 6).</li>
+        </ul>
+
+        <h4>Dismissals</h4>
+        <ol>
+          <li>Bowled</li>
+          <li>Caught</li>
+          <li>LBW (Leg Before Wicket)</li>
+          <li>Run out</li>
+          <li>Stumped</li>
+        </ol>
+      </section>
+
+      <aside class="card">
+        <h3>Quick Tools</h3>
+
+        <div style="margin-bottom:.75rem">
+          <strong>Simple Runs Calculator</strong>
+          <div style="margin-top:.5rem">
+            <label>Runs: <input id="runs" type="number" value="120"></label>
+            <label>Wickets lost: <input id="wickets" type="number" value="3"></label>
+            <button id="calcBtn">Evaluate</button>
+          </div>
+          <div id="calcResult" class="muted" style="margin-top:.5rem"></div>
+        </div>
+
+        <div>
+          <strong>Projected Score (T20)</strong>
+          <div style="margin-top:.5rem">
+            <label>Runs after N overs: <input id="runs2" type="number" value="80"></label>
+            <label>Overs completed: <input id="overs" type="number" value="12"></label>
+            <button id="projBtn">Project</button>
+          </div>
+          <div id="projResult" class="muted" style="margin-top:.5rem"></div>
+        </div>
+      </aside>
+    </div>
+
+    <section>
+      <h3>Latest Scores (Mock)</h3>
+      <p>The app can't call external APIs without configuration — this section shows a simulated live-score fetch to demonstrate client-side interaction.</p>
+      <button id="fetchScores">Fetch Latest (mock)</button>
+      <pre id="scoresBox" style="background:#f3f4f6;padding:.75rem;border-radius:4px;margin-top:.5rem">No scores fetched yet.</pre>
+    </section>
+
+    <section>
+      <h3>Further Reading</h3>
+      <p>Official rules and playing conditions are maintained by the Marylebone Cricket Club (MCC). For in-depth rules, visit the MCC website or your regional cricket board.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    DemoApp &middot; Cricket page &middot; Served from /static/cricket.html
+  </footer>
+
+  <script>
+    // Simple evaluation for runs state
+    document.getElementById('calcBtn').addEventListener('click', function () {
+      const runs = Number(document.getElementById('runs').value) || 0;
+      const wickets = Number(document.getElementById('wickets').value) || 0;
+      let message = '';
+      if (wickets >= 8 && runs < 100) {
+        message = 'Team is in trouble: lower score with many wickets down.';
+      } else if (runs >= 200) {
+        message = 'Excellent score! Likely match-winning.';
+      } else if (runs >= 150) {
+        message = 'Very competitive total.';
+      } else {
+        message = 'Average score — depends on conditions.';
+      }
+      document.getElementById('calcResult').textContent = message;
+    });
+
+    // Projected T20 final score assuming current run-rate holds
+    document.getElementById('projBtn').addEventListener('click', function () {
+      const runs = Number(document.getElementById('runs2').value) || 0;
+      const overs = Number(document.getElementById('overs').value) || 0;
+      const totalOvers = 20;
+      if (overs <= 0 || overs > totalOvers) {
+        document.getElementById('projResult').textContent = 'Enter overs between 1 and 20.';
+        return;
+      }
+      const currentRR = runs / overs;
+      const projected = Math.round(currentRR * totalOvers);
+      document.getElementById('projResult').textContent = `Projected 20-over score: ${projected} runs`;
+    });
+
+    // Mock fetch of scores to simulate client-side fetch
+    document.getElementById('fetchScores').addEventListener('click', function () {
+      const box = document.getElementById('scoresBox');
+      box.textContent = 'Loading...';
+      // Simulate async network call
+      setTimeout(() => {
+        const mock = {
+          match: 'Country A vs Country B',
+          status: 'Country A 187/6 (20 overs) - innings complete',
+          top_scorer: 'Player X (72)'
+        };
+        box.textContent = JSON.stringify(mock, null, 2);
+      }, 800);
+    });
+  </script>
+</body>
+</html>
+
